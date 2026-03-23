@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Teams Home</title>
+<style>
+  :root{
+    --panel:rgba(17,17,17,.88);
+    --border:rgba(255,255,255,.10);
+    --text:#fff;
+    --muted:rgba(255,255,255,.62);
+
+    --accent:#7B2EFF;
+    --accent2:#B266FF;
+    --clubGlow: rgba(123,46,255,.18);
+  }
+
+  *{box-sizing:border-box}
+
+  body{
+    margin:0;
+    background:transparent;
+    color:var(--text);
+    font-family:Arial,sans-serif;
+  }
+
+  .stage{
+    min-height:100vh;
+    padding:22px;
+    background:
+      radial-gradient(1000px 600px at 20% -10%, rgba(255,255,255,.05), transparent 60%),
+      linear-gradient(180deg,#000 0%,#050505 100%);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .stage::before{
+    content:"";
+    position:absolute;
+    inset:-40% -20%;
+    transform:rotate(-14deg);
+    background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.05), rgba(255,255,255,0));
+    opacity:.18;
+    pointer-events:none;
+  }
+
+  .stage::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(800px 520px at 80% 18%, var(--clubGlow), transparent 62%);
+    opacity:.9;
+    pointer-events:none;
+    animation:glowPulse 2.8s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse{
+    0%{opacity:.55}
+    50%{opacity:1}
+    100%{opacity:.55}
+  }
+
+  .wrap{
+    max-width:1100px;
+    margin:0 auto;
+    position:relative;
+    z-index:2;
+  }
+
+  .topRow{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom:8px;
+  }
+
+  .topLeft{
+    min-width:0;
+    flex:1;
+  }
+
+  .topRight{
+    display:flex;
+    align-items:flex-start;
+    justify-content:flex-end;
+    flex-shrink:0;
+  }
+
+  .miniTopPill{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px 12px;
+    min-height:34px;
+    border-radius:999px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.14);
+    color:#fff;
+    font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;
+    font-size:14px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 0 24px var(--clubGlow);
+    white-space:nowrap;
+  }
+
+  .title{
+    font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;
+    font-size:52px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    line-height:1;
+    position:relative;
+    padding-bottom:10px;
+  }
+
+  .title::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    height:6px;
+    width:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg, var(--accent), transparent);
+    animation:underlineSweep 1.8s linear infinite;
+  }
+
+  @keyframes underlineSweep{
+    0%{filter:brightness(1); transform:translateX(-2px)}
+    50%{filter:brightness(1.12); transform:translateX(2px)}
+    100%{filter:brightness(1); transform:translateX(-2px)}
+  }
+
+  .sub{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:6px;
+    max-width:700px;
+  }
+
+  .pillRow{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:14px;
+  }
+
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.14);
+    color:#fff;
+    font-weight:900;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+  }
+
+  .pill strong{
+    font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;
+    font-size:18px;
+    letter-spacing:.8px;
+  }
+
+  .glow{
+    box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 0 32px var(--clubGlow);
+  }
+
+  .grid{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:14px;
+  }
+
+  @media (max-width: 920px){
+    .grid{grid-template-columns:1fr}
+  }
+
+  @media (max-width: 700px){
+    .topRow{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .topRight{
+      width:100%;
+      justify-content:flex-start;
+    }
+  }
+
+  .panel{
+    background:rgba(17,17,17,.88);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:18px;
+    padding:14px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:-60% -20%;
+    transform:rotate(-12deg);
+    background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.05), rgba(255,255,255,0));
+    opacity:.22;
+    pointer-events:none;
+  }
+
+  .panelInner{
+    position:relative;
+    z-index:2;
+  }
+
+  .h2{
+    font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;
+    font-size:26px;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    margin:0;
+    padding-bottom:8px;
+    position:relative;
+  }
+
+  .h2::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:0;
+    height:4px;
+    width:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg, var(--accent), transparent);
+    transform:scaleX(.35);
+    transform-origin:left;
+    transition:.18s ease;
+    opacity:.95;
+  }
+
+  .panel:hover .h2::after{transform:scaleX(1)}
+
+  .heroText{
+    margin-top:12px;
+    color:rgba(255,255,255,.9);
+    font-size:14px;
+    line-height:1.6;
+    max-width:62ch;
+  }
+
+  .actionGrid{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  @media (max-width: 640px){
+    .actionGrid{grid-template-columns:1fr}
+  }
+
+  .actionCard{
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.03);
+    border-radius:18px;
+    padding:16px;
+    transition:.16s ease;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .actionCard:hover{
+    border-color:rgba(255,255,255,.16);
+    background:rgba(255,255,255,.06);
+    box-shadow:0 0 28px var(--clubGlow);
+    transform:translateY(-2px);
+  }
+
+  .actionLabel{
+    color:rgba(255,255,255,.62);
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:.9px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+
+  .actionTitle{
+    font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;
+    font-size:28px;
+    line-height:1;
+    text-transform:uppercase;
+    letter-spacing:.8px;
+    margin-bottom:10px;
+  }
+
+  .actionText{
+    color:rgba(255,255,255,.78);
+    font-size:13px;
+    line-height:1.5;
+    min-height:58px;
+  }
+
+  .actionBtn{
+    margin-top:14px;
+    width:100%;
+    padding:13px 14px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.04);
+    color:#fff;
+    font-weight:900;
+    letter-spacing:.7px;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:.14s ease;
+    position:relative;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+  }
+
+  .actionBtn::after{
+    content:"";
+    position:absolute;
+    left:12px;
+    right:12px;
+    bottom:10px;
+    height:4px;
+    border-radius:999px;
+    background:linear-gradient(90deg, var(--accent), transparent);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:.18s ease;
+    opacity:.95;
+  }
+
+  .actionBtn:hover{
+    transform:translateY(-1px);
+    background:rgba(255,255,255,.08);
+    border-color:rgba(255,255,255,.18);
+    box-shadow:0 0 28px var(--clubGlow);
+  }
+
+  .actionBtn:hover::after{transform:scaleX(1)}
+
+  .actionBtn.primary{
+    background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+    box-shadow:0 0 28px var(--clubGlow);
+  }
+
+  .statList{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:12px;
+  }
+
+  .statItem{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.03);
+    border-radius:14px;
+    padding:12px;
+    transition:.14s ease;
+  }
+
+  .statItem:hover{
+    background:rgba(255,255,255,.06);
+    border-color:rgba(255,255,255,.16);
+    transform:translateY(-1px);
+  }
+
+  .statLabel{
+    color:rgba(255,255,255,.62);
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:.9px;
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+
+  .statValue{
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    word-break:break-word;
+  }
+
+  .tag{
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.04);
+    color:rgba(255,255,255,.92);
+    font-weight:900;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+    font-size:11px;
+    white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="wrap">
+      <div class="topRow">
+        <div class="topLeft">
+          <div class="title">Teams Home</div>
+          <div class="sub" id="subtitle">Manage your club teams from one place.</div>
+        </div>
+
+        <div class="topRight">
+          <div class="miniTopPill">ALL IN ONE</div>
+        </div>
+      </div>
+
+      <div class="pillRow">
+        <div class="pill glow"><strong id="clubNamePill">Club</strong></div>
+        <div class="pill"><span>Role:</span> <strong id="rolePill">Admin</strong></div>
+      </div>
+
+      <div class="grid">
+        <div class="panel">
+          <div class="panelInner">
+            <div class="h2">Team Management</div>
+            <div class="heroText">
+              Use this page to create new teams for the club or view the full list of existing teams.
+              The page styling updates automatically based on the active club slug and club theme.
+            </div>
+
+            <div class="actionGrid">
+              <div class="actionCard">
+                <div class="actionLabel">Admin Action</div>
+                <div class="actionTitle">Create Team</div>
+                <div class="actionText">
+                  Open the create team page to add a new team to the Teams collection for this club.
+                </div>
+                <button class="actionBtn primary" id="createTeamBtn">Go to Create Team</button>
+              </div>
+
+              <div class="actionCard">
+                <div class="actionLabel">Club Overview</div>
+                <div class="actionTitle">View Teams</div>
+                <div class="actionText">
+                  Open the teams list page to view all existing teams and manage the club structure.
+                </div>
+                <button class="actionBtn" id="viewTeamsBtn">Go to View Teams</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelInner">
+            <div class="h2">Current Context</div>
+
+            <div class="statList">
+              <div class="statItem">
+                <div>
+                  <div class="statLabel">Club Name</div>
+                  <div class="statValue" id="clubNameVal">--</div>
+                </div>
+                <div class="tag">Club</div>
+              </div>
+
+              <div class="statItem">
+                <div>
+                  <div class="statLabel">Club Slug</div>
+                  <div class="statValue" id="clubSlugVal">--</div>
+                </div>
+                <div class="tag">Slug</div>
+              </div>
+
+              <div class="statItem">
+                <div>
+                  <div class="statLabel">Role</div>
+                  <div class="statValue" id="roleVal">--</div>
+                </div>
+                <div class="tag">Access</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const state = {
+    clubSlug: "",
+    clubName: "",
+    role: "",
+    theme: {}
+  };
+
+  const $clubNamePill = document.getElementById("clubNamePill");
+  const $rolePill = document.getElementById("rolePill");
+  const $clubNameVal = document.getElementById("clubNameVal");
+  const $clubSlugVal = document.getElementById("clubSlugVal");
+  const $roleVal = document.getElementById("roleVal");
+
+  const $createTeamBtn = document.getElementById("createTeamBtn");
+  const $viewTeamsBtn = document.getElementById("viewTeamsBtn");
+
+  function norm(v){ return String(v || "").trim(); }
+
+  function hexToRgba(hex, alpha){
+    const clean = String(hex || "").replace("#","").trim();
+    if (!/^[0-9a-fA-F]{6}$/.test(clean)) return `rgba(123,46,255,${alpha})`;
+    const num = parseInt(clean, 16);
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function applyThemeFromPayload(payload){
+    const theme = payload?.theme || {};
+    const accent = theme?.accent || "#7B2EFF";
+    const accent2 = theme?.accent2 || accent;
+    const glow = theme?.glow || theme?.clubGlow || hexToRgba(accent, .18);
+
+    const r = document.documentElement.style;
+    r.setProperty("--accent", accent);
+    r.setProperty("--accent2", accent2);
+    r.setProperty("--clubGlow", glow);
+  }
+
+  function syncContext(){
+    $clubNamePill.textContent = state.clubName || "Club";
+    $rolePill.textContent = state.role || "--";
+
+    $clubNameVal.textContent = state.clubName || "--";
+    $clubSlugVal.textContent = state.clubSlug || "--";
+    $roleVal.textContent = state.role || "--";
+  }
+
+  function goToPage(path){
+    window.parent.postMessage({
+      type: "NAVIGATE",
+      url: path
+    }, "*");
+  }
+
+  $createTeamBtn.addEventListener("click", () => {
+    goToPage("/admin-create-team");
+  });
+
+  $viewTeamsBtn.addEventListener("click", () => {
+    goToPage("/view-teams");
+  });
+
+  window.addEventListener("message", (ev) => {
+    const data = ev.data;
+    if (!data) return;
+
+    if (data.type === "TEAMS_HOME_INIT"){
+      applyThemeFromPayload(data);
+
+      state.clubSlug = norm(data.clubSlug);
+      state.clubName = norm(data.clubName || data.clubSlug);
+      state.role = norm(data.role);
+      state.theme = data.theme || {};
+
+      syncContext();
+      return;
+    }
+  });
+
+  try {
+    window.parent.postMessage({ type:"TEAMS_HOME_READY" }, "*");
+  } catch(_) {}
+</script>
+</body>
+</html>

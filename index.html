@@ -175,12 +175,8 @@
   .grid{
     margin-top:16px;
     display:grid;
-    grid-template-columns:1.15fr .85fr;
+    grid-template-columns:1fr;
     gap:14px;
-  }
-
-  @media (max-width: 920px){
-    .grid{grid-template-columns:1fr}
   }
 
   @media (max-width: 700px){
@@ -352,60 +348,6 @@
     background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
     box-shadow:0 0 28px var(--clubGlow);
   }
-
-  .statList{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:12px;
-  }
-
-  .statItem{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.03);
-    border-radius:14px;
-    padding:12px;
-    transition:.14s ease;
-  }
-
-  .statItem:hover{
-    background:rgba(255,255,255,.06);
-    border-color:rgba(255,255,255,.16);
-    transform:translateY(-1px);
-  }
-
-  .statLabel{
-    color:rgba(255,255,255,.62);
-    font-size:11px;
-    font-weight:900;
-    letter-spacing:.9px;
-    text-transform:uppercase;
-    margin-bottom:4px;
-  }
-
-  .statValue{
-    color:#fff;
-    font-size:15px;
-    font-weight:700;
-    word-break:break-word;
-  }
-
-  .tag{
-    padding:6px 10px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.14);
-    background:rgba(255,255,255,.04);
-    color:rgba(255,255,255,.92);
-    font-weight:900;
-    letter-spacing:.8px;
-    text-transform:uppercase;
-    font-size:11px;
-    white-space:nowrap;
-  }
 </style>
 </head>
 <body>
@@ -443,7 +385,7 @@
                 <div class="actionText">
                   Open the create team page to add a new team to the Teams collection for this club.
                 </div>
-                <button class="actionBtn primary" id="createTeamBtn">Go to Create Team</button>
+                <button class="actionBtn primary" id="createTeamBtn" type="button">Go to Create Team</button>
               </div>
 
               <div class="actionCard">
@@ -452,39 +394,7 @@
                 <div class="actionText">
                   Open the teams list page to view all existing teams and manage the club structure.
                 </div>
-                <button class="actionBtn" id="viewTeamsBtn">Go to View Teams</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panelInner">
-            <div class="h2">Current Context</div>
-
-            <div class="statList">
-              <div class="statItem">
-                <div>
-                  <div class="statLabel">Club Name</div>
-                  <div class="statValue" id="clubNameVal">--</div>
-                </div>
-                <div class="tag">Club</div>
-              </div>
-
-              <div class="statItem">
-                <div>
-                  <div class="statLabel">Club Slug</div>
-                  <div class="statValue" id="clubSlugVal">--</div>
-                </div>
-                <div class="tag">Slug</div>
-              </div>
-
-              <div class="statItem">
-                <div>
-                  <div class="statLabel">Role</div>
-                  <div class="statValue" id="roleVal">--</div>
-                </div>
-                <div class="tag">Access</div>
+                <button class="actionBtn" id="viewTeamsBtn" type="button">Go to View Teams</button>
               </div>
             </div>
           </div>
@@ -503,10 +413,6 @@
 
   const $clubNamePill = document.getElementById("clubNamePill");
   const $rolePill = document.getElementById("rolePill");
-  const $clubNameVal = document.getElementById("clubNameVal");
-  const $clubSlugVal = document.getElementById("clubSlugVal");
-  const $roleVal = document.getElementById("roleVal");
-
   const $createTeamBtn = document.getElementById("createTeamBtn");
   const $viewTeamsBtn = document.getElementById("viewTeamsBtn");
 
@@ -537,47 +443,44 @@
   function syncContext(){
     $clubNamePill.textContent = state.clubName || "Club";
     $rolePill.textContent = state.role || "--";
-
-    $clubNameVal.textContent = state.clubName || "--";
-    $clubSlugVal.textContent = state.clubSlug || "--";
-    $roleVal.textContent = state.role || "--";
   }
 
   function goToPage(path){
+    const cleanPath = norm(path);
+    if (!cleanPath) return;
+
     window.parent.postMessage({
       type: "NAVIGATE",
-      url: path
+      url: cleanPath,
+      clubSlug: state.clubSlug
     }, "*");
   }
 
-  $createTeamBtn.addEventListener("click", () => {
+  $createTeamBtn.addEventListener("click", function () {
     goToPage("/admin-create-team");
   });
 
-  $viewTeamsBtn.addEventListener("click", () => {
+  $viewTeamsBtn.addEventListener("click", function () {
     goToPage("/view-teams");
   });
 
-  window.addEventListener("message", (ev) => {
+  window.addEventListener("message", function (ev) {
     const data = ev.data;
     if (!data) return;
 
     if (data.type === "TEAMS_HOME_INIT"){
       applyThemeFromPayload(data);
-
       state.clubSlug = norm(data.clubSlug);
       state.clubName = norm(data.clubName || data.clubSlug);
       state.role = norm(data.role);
       state.theme = data.theme || {};
-
       syncContext();
-      return;
     }
   });
 
   try {
     window.parent.postMessage({ type:"TEAMS_HOME_READY" }, "*");
-  } catch(_) {}
+  } catch(e) {}
 </script>
 </body>
 </html>
